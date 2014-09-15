@@ -15,25 +15,30 @@ complete <- function(directory, id = 1:332) {
         gvect <- nrow(monitorsubset) ## this gives us the number of ids we need to run through the next loop
         completeids <- data.frame(id = (integer(gvect)), nobs = integer(gvect), stringsAsFactors = FALSE)
         idvect <- monitorsubset$ID
+        if (length(idvect) == 0) {
+                idvect <- idee
+                gvect <- 1
+        }
         cnt = integer(1)
         cnt = 1
         for (k in 1:gvect) {
                 m <- k + 1
                 if (identical(k,gvect)) {
-                        completeids <- rbind(completeids, data.frame(id = idvect[k], nobs = cnt, stringsAsFactors = FALSE))
-                        cnt = 1
-                        break
+                        id <- idvect[k]
+                        nobs <- cnt
+                        completeids <- rbind(completeids, data.frame(id, nobs, stringsAsFactors = FALSE))
+                        cnt <- 1
                 } else if (identical(idvect[m], idvect[k])) { 
-                        cnt = cnt + 1
-                        next
+                        cnt <- cnt + 1
                 } else {
-                        completeids <- rbind(completeids, data.frame(id = idvect[k], nobs = cnt, stringsAsFactors = FALSE))
-                        cnt = 1
+                        id <- idvect[k]
+                        nobs <- cnt
+                        completeids <- rbind(completeids, data.frame(id, nobs, stringsAsFactors = FALSE))
+                        cnt <- 1
                 }
         }
         completeids <- completeids[which(completeids$id > 0 & completeids$nobs > 0), ]
         ## completeids[ !(completeids$id | completeids$nobs) %in% c(0,0), ]
         completeids
 }
-
 ## complete("specdata", c(2, 4, 8, 10, 12))
